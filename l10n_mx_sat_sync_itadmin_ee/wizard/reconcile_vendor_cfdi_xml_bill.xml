@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_reconcile_cfdi_invoice_from_ir_attachment_form" model="ir.ui.view">
+            <field name="name">Reconcile XML Bill</field>
+            <field name="model">reconcile.vendor.cfdi.xml.bill</field>
+            <field name="arch" type="xml">
+                <form string="Conciliar compras">
+                	<group>
+                		<field name="typo_de_combante" required="1"/>
+                	</group>
+                	<footer>
+                        <button name="action_reconcile" string="Conciliar" type="object" class="oe_highlight"/> 
+                        <button string="Cancelar" class="oe_highlight" special="cancel" />
+                    </footer>
+               </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

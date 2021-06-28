@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+    <t t-name="multi_attach_xmls_template">
+        <div style="margin:-24px -16px;padding:0px;">
+            <div id="dragandrophandler" class="dnd_normal"><p>Arrastre y suelte sus archivos aquí </p><p>o de clic para subir los archivos</p></div>
+            <input type="file" id="files" multiple="multiple" style="display:none;"/>
+            <div id="alertscontent" stsyle="margin:0;padding:0;"></div>
+            <div id="filescontent"></div>
+            <div id="dndfooter">
+                <button id="save" class="btn btn-sm btn-primary"><span>Importar</span></button>
+                <button id="show" class="btn btn-sm btn-primary" style="display: none;"><span>Mostrar adjuntos</span></button>
+                <button id="close" class="btn btn-sm oe_link"><span>Cancelar</span></button>
+            </div>
+        </div>
+    </t>
+</template>
