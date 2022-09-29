@@ -960,6 +960,7 @@ class PortalSAT(object):
                 if content:
                     invoice_content.update({uuid: [values, content]})
                 current += 1
+                _logger.info(uuid)
 
             if len(invoice_content) == len(for_download):
                 break

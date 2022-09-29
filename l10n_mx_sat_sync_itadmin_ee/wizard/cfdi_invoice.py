@@ -215,23 +215,27 @@ class CfdiInvoiceAttachment(models.TransientModel):
         timbrado_data = data.get('Comprobante',{}).get('Complemento',{}).get('TimbreFiscalDigital',{})
 
         vendor_uuid = timbrado_data.get('@UUID')
+
         if vendor_uuid != '':
             vendor_order_exist = invoice_obj.search([('l10n_mx_edi_cfdi_uuid_cusom','=',vendor_uuid.lower())],limit=1)
             if not vendor_order_exist:
                 vendor_order_exist = invoice_obj.search([('l10n_mx_edi_cfdi_uuid_cusom','=',vendor_uuid.upper())],limit=1)
             if vendor_order_exist:
                 raise Warning("Factura ya existente con ese UUID %s"%(vendor_uuid))
+
         if customer_reference != '':
             invoice_exist = invoice_obj.search([('ref','=',customer_reference), ('type','=', 'out_invoice')],limit=1)
             if invoice_exist:
                 customer_reference = ''
 #                raise Warning("Factura ya existente con la referencia del vendedor %s"%(customer_reference))
+
         ctx = self._context.copy()
         ctx.update({'default_type': 'out_invoice', 'type': 'out_invoice'})
         partner = self.create_update_partner(partner_data)
         if not journal:
             journal = invoice_obj.with_context(ctx)._default_journal()
         #journal = invoice_obj.with_context(ctx)._default_journal()
+
         invoice_vals = {
             'type':'out_invoice',
             'partner_id':partner.id,
@@ -270,8 +274,6 @@ class CfdiInvoiceAttachment(models.TransientModel):
         invoice_vals = customer_invoice._convert_to_write({name: customer_invoice[name] for name in customer_invoice._cache})
         invoice_vals.update({'invoice_date':parse(invoice_date).strftime(DEFAULT_SERVER_DATE_FORMAT),'journal_id' : journal.id,})
         
-        search_code = 'Propio' #self.search_code or 
-        p_supplierinfo = self.env['product.supplierinfo']
         
         fields = invoice_line_obj._fields.keys()
         ctx.update({'journal':journal.id})
@@ -282,8 +284,8 @@ class CfdiInvoiceAttachment(models.TransientModel):
             unit_price = safe_eval(line.get('@ValorUnitario','0.0'))
             default_code = line.get('@NoIdentificacion')
             qty = safe_eval(line.get('@Cantidad','1.0'))
-            #clave_unidad = line.get('@ClaveUnidad')
-            #clave_producto = line.get('@ClaveProdServ')
+            clave_unidad = line.get('@ClaveUnidad')
+            clave_producto = line.get('@ClaveProdServ')
             taxes = line.get('Impuestos',{}).get('Traslados',{}).get('Traslado')
             tax_ids = []
             if taxes:
@@ -301,34 +303,8 @@ class CfdiInvoiceAttachment(models.TransientModel):
                 if type(taxes)!=list:
                     taxes = [taxes]
                 tax_ids  = self.get_tax_from_codes(taxes,'sale',no_imp_tras)
-#                 for tax in taxes:
-#                     amount_tasa = float(tax.get('@TasaOCuota'))*100
-#                     tasa = str(amount_tasa)
-#                     tax_exist = tax_obj.search([('impuesto','=',tax.get('@Impuesto')),('type_tax_use','=','sale'),('tipo_factor','=',tax.get('@TipoFactor')),('amount', '=', tasa)],limit=1)
-#                     if not tax_exist:
-#                         raise Warning("La factura contiene impuestos que no han sido configurados. Por favor configure los impuestos primero")
-#                     tax_ids.append(tax_exist.id)
-                       
-            product_exist = False
-            if default_code:
-                if search_code=='Propio':
-                    product_exist = product_obj.search([('default_code','=',default_code)],limit=1)
-                else:
-                    supplierinfo_exist = p_supplierinfo.search([('product_code','=',default_code)],limit=1)
-                    if supplierinfo_exist.product_tmpl_id:
-                        product_exist = supplierinfo_exist.product_tmpl_id.product_variant_id
-            if not product_exist:
-                product_exist = product_obj.search([('name','=',product_name)],limit=1)
-                
-            if not product_exist:
-                product_vals = {'default_code':default_code, 'name':product_name, 'standard_price' : unit_price,}
-
-                if product_type_default:
-                    product_vals.update({'type' : product_type_default})
-                elif 'product' in product_types:
-                    product_vals.update({'type' : 'product'})
-                product_vals.update({'sale_ok': True, 'purchase_ok': False})
-                product_exist = product_obj.create(product_vals)
+                      
+            product_exist = self.get_or_create_product(default_code, product_name, clave_unidad, unit_price, clave_producto, sale_ok=True, purchase_ok=False)
 
             if discount_amount:
                 discount_percent = discount_amount*100.0/(unit_price*qty)
@@ -473,8 +449,6 @@ class CfdiInvoiceAttachment(models.TransientModel):
         ctx.update({'journal':journal.id})
         
         move_lines = []
-        search_code = 'Propio'
-        p_supplierinfo = self.env['product.supplierinfo']
         
         for line in invoice_line_data:
             product_name = line.get('@Descripcion')
@@ -482,8 +456,8 @@ class CfdiInvoiceAttachment(models.TransientModel):
             unit_price = safe_eval(line.get('@ValorUnitario','0.0'))
             default_code = line.get('@NoIdentificacion')
             qty = safe_eval(line.get('@Cantidad','1.0'))
-            #clave_unidad = line.get('@ClaveUnidad')
-            #clave_producto = line.get('@ClaveProdServ')
+            clave_unidad = line.get('@ClaveUnidad')
+            clave_producto = line.get('@ClaveProdServ')
             taxes = line.get('Impuestos',{}).get('Traslados',{}).get('Traslado')
             tax_ids  = []
             if taxes:
@@ -502,36 +476,8 @@ class CfdiInvoiceAttachment(models.TransientModel):
                 if type(taxes)!=list:
                     taxes = [taxes]
                 tax_ids  = self.get_tax_from_codes(taxes,'purchase',no_imp_tras)
-#                 tax_ids = []
-#                 if taxes:
-#                     for tax in taxes:
-#                         amount_tasa = float(tax.get('@TasaOCuota'))*100
-#                         tasa = str(amount_tasa)
-#                         tax_exist = tax_obj.search([('impuesto','=',tax.get('@Impuesto')),('type_tax_use','=','sale'),('tipo_factor','=',tax.get('@TipoFactor')),('amount', '=', tasa)],limit=1)
-#                         if not tax_exist:
-#                             raise Warning("La factura contiene impuestos que no han sido configurados. Por favor configure los impuestos primero")
-#                         tax_ids.append(tax_exist.id)
             
-            product_exist = False
-            if default_code:
-                if search_code=='Propio':
-                    product_exist = product_obj.search([('default_code','=',default_code)],limit=1)
-                else:
-                    supplierinfo_exist = p_supplierinfo.search([('product_code','=',default_code)],limit=1)
-                    if supplierinfo_exist.product_tmpl_id:
-                        product_exist = supplierinfo_exist.product_tmpl_id.product_variant_id
-            if not product_exist:
-                product_exist = product_obj.search([('name','=',product_name)],limit=1)
-                
-            if not product_exist:
-                product_vals = {'default_code':default_code, 'name':product_name, 'standard_price' : unit_price}
-
-                if product_type_default:
-                    product_vals.update({'type' : product_type_default})
-                elif 'product' in product_types:
-                    product_vals.update({'type' : 'product'})
-                product_vals.update({'sale_ok': False, 'purchase_ok': True})
-                product_exist = product_obj.create(product_vals)
+            product_exist = self.get_or_create_product(default_code, product_name, clave_unidad, unit_price, clave_producto, sale_ok=False, purchase_ok=True)
 
             if discount_amount:
                 discount_percent = discount_amount*100.0/(unit_price*qty)
@@ -676,17 +622,14 @@ class CfdiInvoiceAttachment(models.TransientModel):
         ctx.update({'journal':journal.id})
         
         move_lines = []
-        search_code = 'Propio' #self.search_code or 
-        p_supplierinfo = self.env['product.supplierinfo']
-        
         for line in invoice_line_data:
             product_name = line.get('@Descripcion')
             discount_amount = safe_eval(line.get('@Descuento','0.0'))
             unit_price = safe_eval(line.get('@ValorUnitario','0.0'))
             default_code = line.get('@NoIdentificacion')
             qty = safe_eval(line.get('@Cantidad','1.0'))
-            #clave_unidad = line.get('@ClaveUnidad')
-            #clave_producto = line.get('@ClaveProdServ')
+            clave_unidad = line.get('@ClaveUnidad')
+            clave_producto = line.get('@ClaveProdServ')
             taxes = line.get('Impuestos',{}).get('Traslados',{}).get('Traslado')
             tax_ids = []
             if taxes:
@@ -704,36 +647,8 @@ class CfdiInvoiceAttachment(models.TransientModel):
                 if type(taxes)!=list:
                     taxes = [taxes]
                 tax_ids  = self.get_tax_from_codes(taxes,'sale',no_imp_tras)
-#                 tax_ids = []
-#                 if taxes:
-#                     for tax in taxes:
-#                         amount_tasa = float(tax.get('@TasaOCuota'))*100
-#                         tasa = str(amount_tasa)
-#                         tax_exist = tax_obj.search([('impuesto','=',tax.get('@Impuesto')),('type_tax_use','=','sale'),('tipo_factor','=',tax.get('@TipoFactor')),('amount', '=', tasa)],limit=1)
-#                         if not tax_exist:
-#                             raise Warning("La factura contiene impuestos que no han sido configurados. Por favor configure los impuestos primero")
-#                         tax_ids.append(tax_exist.id)
-                       
-            product_exist = False
-            if default_code:
-                if search_code=='Propio':
-                    product_exist = product_obj.search([('default_code','=',default_code)],limit=1)
-                else:
-                    supplierinfo_exist = p_supplierinfo.search([('product_code','=',default_code)],limit=1)
-                    if supplierinfo_exist.product_tmpl_id:
-                        product_exist = supplierinfo_exist.product_tmpl_id.product_variant_id
-            if not product_exist:
-                product_exist = product_obj.search([('name','=',product_name)],limit=1)
-                
-            if not product_exist:
-                product_vals = {'default_code':default_code, 'name':product_name, 'standard_price' : unit_price}
-
-                if product_type_default:
-                    product_vals.update({'type' : product_type_default})
-                elif 'product' in product_types:
-                    product_vals.update({'type' : 'product'})
-                product_vals.update({'sale_ok': True, 'purchase_ok': False})
-                product_exist = product_obj.create(product_vals)
+                     
+            product_exist = self.get_or_create_product(default_code, product_name, clave_unidad, unit_price, clave_producto, sale_ok=True, purchase_ok=False)
 
             if discount_amount:
                 discount_percent = discount_amount*100.0/(unit_price*qty)
@@ -774,7 +689,7 @@ class CfdiInvoiceAttachment(models.TransientModel):
                 invoice_vals.pop('line_ids')
         invoice_exist = invoice_obj.with_context(ctx).create(invoice_vals)
         
-        invoice_exist.compute_taxes()
+        #invoice_exist.compute_taxes()
         action = self.env.ref('account.action_move_out_refund_type')
         result = action.read()[0]
         res = self.env.ref('account.view_move_form', False)
@@ -888,8 +803,8 @@ class CfdiInvoiceAttachment(models.TransientModel):
             unit_price = safe_eval(line.get('@ValorUnitario','0.0'))
             default_code = line.get('@NoIdentificacion')
             qty = safe_eval(line.get('@Cantidad','1.0'))
-            #clave_unidad = line.get('@ClaveUnidad')
-            #clave_producto = line.get('@ClaveProdServ')
+            clave_unidad = line.get('@ClaveUnidad')
+            clave_producto = line.get('@ClaveProdServ')
             taxes = line.get('Impuestos',{}).get('Traslados',{}).get('Traslado')
             if taxes:
                 if type(taxes)!=list:
@@ -905,28 +820,8 @@ class CfdiInvoiceAttachment(models.TransientModel):
             if type(taxes)!=list:
                 taxes = [taxes]
             tax_ids  = self.get_tax_from_codes(taxes or [],'purchase',no_imp_tras)
-#             tax_ids = []
-#             if taxes:
-#                 for tax in taxes:
-#                     amount_tasa = float(tax.get('@TasaOCuota'))*100
-#                     tasa = str(amount_tasa)
-#                     tax_exist = tax_obj.search([('impuesto','=',tax.get('@Impuesto')),('type_tax_use','=','sale'),('tipo_factor','=',tax.get('@TipoFactor')),('amount', '=', tasa)],limit=1)
-#                     if not tax_exist:
-#                         raise Warning("La factura contiene impuestos que no han sido configurados. Por favor configure los impuestos primero")
-#                     tax_ids.append(tax_exist.id)
-            if default_code:
-                product_exist = product_obj.search([('default_code','=',default_code)],limit=1)
-            else:
-                product_exist = product_obj.search([('name','=',product_name)],limit=1)
-            if not product_exist:
-                product_vals = {'default_code':default_code, 'name':product_name, 'standard_price' : unit_price}
 
-                if product_type_default:
-                    product_vals.update({'type' : product_type_default})
-                elif 'product' in product_types:
-                    product_vals.update({'type' : 'product'})
-                product_vals.update({'sale_ok': False, 'purchase_ok': True})
-                product_exist = product_obj.create(product_vals)
+            product_exist = self.get_or_create_product(default_code, product_name, clave_unidad, unit_price, clave_producto, sale_ok=False, purchase_ok=True)
 
             if discount_amount:
                 discount_percent = discount_amount*100.0/(unit_price*qty)
@@ -968,24 +863,41 @@ class CfdiInvoiceAttachment(models.TransientModel):
         return result
     
     @api.model
-    def get_or_create_product(self, default_code, product_name, unit_price, sale_ok=True, purchase_ok=False):
+    def get_or_create_product(self, default_code, product_name, clave_unidad, unit_price, clave_producto, sale_ok=True, purchase_ok=False):
         product_exist = False
         product_obj = self.env['product.product']
-        if default_code:
-            product_exist = product_obj.search([('default_code','=',default_code)],limit=1)
-        if not product_exist:
-            product_exist = product_obj.search([('name','=',product_name)],limit=1)
+        param_obj = self.env['ir.config_parameter'].sudo()
+        #buscar_producto_por_clave_sat = self.env['ir.config_parameter'].sudo().get_param('l10n_mx_sat_sync_itadmin.buscar_producto_por_clave_sat')
         product_types = dict(product_obj._fields.get('type')._description_selection(product_obj.env))
         product_type_default = self.env['ir.config_parameter'].sudo().get_param('l10n_mx_sat_sync_itadmin.product_type_default')
-        if not product_exist:
-                product_vals = {'default_code':default_code, 'name':product_name, 'standard_price' : unit_price}
+        p_supplierinfo = self.env['product.supplierinfo']
 
-                if product_type_default:
-                    product_vals.update({'type' : product_type_default})
-                elif 'product' in product_types:
-                    product_vals.update({'type' : 'product'})
-                product_vals.update({'sale_ok': sale_ok, 'purchase_ok': purchase_ok})
-                product_exist = product_obj.create(product_vals)
+        if default_code:
+            product_exist = product_obj.search([('default_code','=',default_code)],limit=1)
+            if not product_exist:
+                supplierinfo_exist = p_supplierinfo.search([('product_code','=',default_code)],limit=1)
+                if supplierinfo_exist.product_tmpl_id:
+                    product_exist = supplierinfo_exist.product_tmpl_id.product_variant_id
+        if not product_exist:
+            product_exist = product_obj.search([('name','=',product_name)],limit=1)
+        #if buscar_producto_por_clave_sat and not product_exist:
+        #    product_exist = product_obj.search([('clave_producto','=',clave_producto)],limit=1)
+        #if not product_exist and self.si_producto_no_tiene_codigo=='Buscar manual':
+        #    product_exist = self.product_id
+        if not product_exist:
+            um_descripcion = self.env['uom.uom'].search([('l10n_mx_edi_code_sat_id.code','=',clave_unidad)], limit=1)
+            sat_code = self.env['l10n_mx_edi.product.sat.code'].search([('code','=',clave_producto)], limit=1)
+            if not um_descripcion:
+                raise Warning("No tiene configurada la unidad de medida %s. Por favor configure la unidad de medida primero", clave_unidad)
+            if not sat_code:
+                raise Warning("No tiene configurada la clave del SAT %s. Por favor configure la clave primero", clave_producto)
+            product_vals = {'default_code':default_code, 'name':product_name, 'standard_price' : unit_price, 'uom_id' : um_descripcion.id, 'l10n_mx_edi_code_sat_id' : sat_code.id, 'uom_po_id' : um_descripcion.id}
+            if product_type_default:
+                product_vals.update({'type' : product_type_default})
+            elif 'product' in product_types:
+                product_vals.update({'type' : 'product'})
+            product_vals.update({'sale_ok': sale_ok, 'purchase_ok': purchase_ok})
+            product_exist = product_obj.create(product_vals)
 
         return product_exist
     
@@ -1005,7 +917,7 @@ class CfdiInvoiceAttachment(models.TransientModel):
                     tasa = str(amount_tasa)
                 else:
                     tasa = str(0)
-                tax_exist = tax_obj.search([('type_tax_use','=',tax_type),('l10n_mx_cfdi_tax_type','=',tax.get('@TipoFactor')),('amount', '=', tasa)],limit=1)
+                tax_exist = tax_obj.search([('type_tax_use','=',tax_type), ('l10n_mx_cfdi_tax_type','=',tax.get('@TipoFactor')), ('amount', '=', tasa), ('company_id','=',self.env.company.id)],limit=1)
                 if not tax_exist:
                     raise Warning("La factura contiene impuestos que no han sido configurados. Por favor configure los impuestos primero")
                 tax_ids.append(tax_exist.id)
@@ -1065,16 +977,15 @@ class CfdiInvoiceAttachment(models.TransientModel):
             order_vals.update({'pricelist_id':pricelist.id})
 
         sale_order_exist = sale_obj.create(order_vals)
-        #search_code = 'Propio'
-        #p_supplierinfo = self.env['product.supplierinfo']
+
         for line in order_line_data:
             product_name = line.get('@Descripcion')
             discount_amount = safe_eval(line.get('@Descuento','0.0'))
             unit_price = safe_eval(line.get('@ValorUnitario','0.0'))
             default_code = line.get('@NoIdentificacion')
             qty = safe_eval(line.get('@Cantidad','1.0'))
-            #clave_unidad = line.get('@ClaveUnidad')
-            #clave_producto = line.get('@ClaveProdServ')
+            clave_unidad = line.get('@ClaveUnidad')
+            clave_producto = line.get('@ClaveProdServ')
             taxes = line.get('Impuestos',{}).get('Traslados',{}).get('Traslado')
             tax_ids = []
             if taxes:
@@ -1092,17 +1003,9 @@ class CfdiInvoiceAttachment(models.TransientModel):
                 if type(taxes)!=list:
                     taxes = [taxes]
                 tax_ids  = self.get_tax_from_codes(taxes,'sale', no_imp_tras)
-#                 tax_ids = []
-#                 if taxes:
-#                     for tax in taxes:
-#                         amount_tasa = float(tax.get('@TasaOCuota'))*100
-#                         tasa = str(amount_tasa)
-#                         tax_exist = tax_obj.search([('tag_ids.name','=',tax.get('@Impuesto')),('type_tax_use','=','sale'),('tipo_factor','=',tax.get('@TipoFactor')),('amount', '=', tasa)],limit=1)
-#                         if not tax_exist:
-#                             raise Warning("La factura contiene impuestos que no han sido configurados. Por favor configure los impuestos primero")
-#                         tax_ids.append(tax_exist.id)
-            
-            product_exist = self.get_or_create_product(default_code, product_name, unit_price, sale_ok=True, purchase_ok=False)
+
+            product_exist = self.get_or_create_product(default_code, product_name, clave_unidad, unit_price, clave_producto, sale_ok=True, purchase_ok=False)
+
             if discount_amount:
                 discount_percent = discount_amount*100.0/(unit_price*qty)
             else:
@@ -1216,8 +1119,8 @@ class CfdiInvoiceAttachment(models.TransientModel):
             unit_price = safe_eval(line.get('@ValorUnitario','0.0'))
             default_code = line.get('@NoIdentificacion')
             qty = safe_eval(line.get('@Cantidad','1.0'))
-            #clave_unidad = line.get('@ClaveUnidad')
-            #clave_producto = line.get('@ClaveProdServ')
+            clave_unidad = line.get('@ClaveUnidad')
+            clave_producto = line.get('@ClaveProdServ')
             taxes = line.get('Impuestos',{}).get('Traslados',{}).get('Traslado')
             tax_ids = []
             if taxes:
@@ -1236,17 +1139,9 @@ class CfdiInvoiceAttachment(models.TransientModel):
                 if type(taxes)!=list:
                     taxes = [taxes]
                 tax_ids  = self.get_tax_from_codes(taxes,'purchase',no_imp_tras)
-#                 tax_ids = []
-#                 if taxes:
-#                     for tax in taxes:
-#                         amount_tasa = float(tax.get('@TasaOCuota'))*100
-#                         tasa = str(amount_tasa)
-#                         tax_exist = tax_obj.search([('impuesto','=',tax.get('@Impuesto')),('type_tax_use','=','sale'),('tipo_factor','=',tax.get('@TipoFactor')),('amount', '=', tasa)],limit=1)
-#                         if not tax_exist:
-#                             raise Warning("La factura contiene impuestos que no han sido configurados. Por favor configure los impuestos primero")
-#                         tax_ids.append(tax_exist.id)
             
-            product_exist = self.get_or_create_product(default_code, product_name, unit_price,sale_ok=False, purchase_ok=True)
+            product_exist = self.get_or_create_product(default_code, product_name, clave_unidad, unit_price, clave_producto,sale_ok=False, purchase_ok=True)
+
             if discount_amount:
                 discount_percent = discount_amount*100.0/(unit_price*qty)
             else:

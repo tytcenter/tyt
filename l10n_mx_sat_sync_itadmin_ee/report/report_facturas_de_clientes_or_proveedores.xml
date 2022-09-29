@@ -21,9 +21,9 @@
 	<template id="report_facturas_de_clientes_document">
         <t t-call="web.external_layout">
             <t t-set="o" t-value="o.with_context(lang=lang)" />
-            <t t-set="xml" t-value="l10n_mx_edi_get_xml_etree(base64.decodestring(o.datas))"/>
+            <t t-set="xml" t-value="l10n_mx_edi_get_xml_etree(o.datas)"/>
             <t t-set="tfd" t-value="l10n_mx_edi_get_tfd_etree(xml)"/>
-            <t t-set="tfd_original_string" t-value="_get_l10n_mx_edi_cadena(base64.decodestring(o.datas))"/>
+            <t t-set="tfd_original_string" t-value="_get_l10n_mx_edi_cadena(o.datas)"/>
             <t t-set="supplier_rfc" t-value="xml.Receptor.get('Rfc', xml.Receptor.get('rfc'))"/>
             <t t-set="customer_rfc" t-value="xml.Emisor.get('Rfc', xml.Emisor.get('rfc'))"/>    
             <t t-set="address">

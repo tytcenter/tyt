@@ -104,39 +104,37 @@
 	    res_model="cfdi.invoice.attachment"
 	    binding_model="ir.attachment"
 	    view_mode="form"
-		binding_views="form"    
-	    target="new"
+	    binding_views="list"
+	    target="new" 
 	    id="action_generate_supplier_invoice_from_attachment"
 	    context="{'create_so_po':False}"
 	    />
-			
-     <act_window name="Genera pedidos"
-			    res_model="cfdi.invoice.attachment"
-			    binding_model="ir.attachment"
-			    view_mode="form"
-			    target="new"
-				binding_views="form"	
-			    id="action_generate_so_po_from_attachment"
-			    context="{'create_so_po':True}"
-			    />
-		   
+
+    <act_window name="Genera pedidos"
+	    res_model="cfdi.invoice.attachment"
+	    binding_model="ir.attachment"
+	    view_mode="form"
+	    target="new"
+		binding_views="list"	 	
+	    id="action_generate_so_po_from_attachment"
+	    context="{'create_so_po':True}"
+	    />
+  
     <record id="action_unlink_xml_attahchment_from_invoice" model="ir.actions.server">
     	<field name="name">Desconcilar</field>
         <field name="type">ir.actions.server</field>
         <field name="state">code</field>
         <field name="model_id" ref="base.model_ir_attachment"/>
         <field name="binding_model_id" ref="base.model_ir_attachment"/>
-        <field name="code">
-				records.action_renmove_invoice_link()
-        </field>
+        <field name="code">records.action_renmove_invoice_link()</field>
     </record>
     
    <act_window name="Conciliar"
 	    res_model="reconcile.vendor.cfdi.xml.bill"
-	    binding_model="ir.attachment" 
+	    binding_model="ir.attachment"
 	    view_mode="form"
 	    target="new"
-		binding_views="form"	
+            binding_views="list"	
 	    id="action_reconcile_vendor_cfdi_xml_bill_popup"
 	    />
 	  

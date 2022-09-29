@@ -7,7 +7,7 @@
             <field name="inherit_id" ref="base.view_company_form" />
             <field name="arch" type="xml">
                 <xpath expr="//notebook" position="inside">
-                    <page name="info_sat_sync" string="CFDI 3.3 Sat Sync">
+                    <page name="info_sat_sync" string="CFDI 4.0 SAT Sync">
                             <separator string="SAT Synchronization" />
 			                <group>
 			                	<field name="l10n_mx_esignature_ids"/>

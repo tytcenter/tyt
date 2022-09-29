@@ -82,11 +82,17 @@ class ReconcileVendorCfdiXmlBill(models.TransientModel):
             data = convert_to_special_dict(data)
             
             invoice_date = data.get('Comprobante',{}).get('@Fecha')
+
             Complemento = data.get('Comprobante',{}).get('Complemento',{})
-            #if self.typo_de_combante in ['P','SP']:
-            #    total = eval(Complemento.get('pago10:pagos').get('pago10:Pago').get('pago10:DoctoRelacionado').get('@imppagado','0.0'))
-            #else:
-            total = eval(data.get('Comprobante',{}).get('@Total','0.0'))
+            version = data.get('Comprobante',{}).get('@Version')
+
+            if self.typo_de_combante in ['P','SP']:
+               if version == '4.0':
+                  total = eval(Complemento.get('pago20:pagos').get('pago20:Pago').get('@Monto','0.0'))
+               else:
+                  total = eval(Complemento.get('pago10:pagos').get('pago10:Pago').get('@Monto','0.0'))
+            else:
+               total = eval(data.get('Comprobante',{}).get('@Total','0.0'))
                 
             cust_data = data.get('Comprobante',{}).get(element_tag,{})
             uso_data = data.get('Comprobante',{}).get('Receptor',{})

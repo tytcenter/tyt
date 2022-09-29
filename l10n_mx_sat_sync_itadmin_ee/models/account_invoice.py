@@ -27,7 +27,7 @@ class AccountInvoice(models.Model):
                               ('res_model', '=', inv._name),
                               ('name', '=', results[0].name)]
                     
-                    attachment = inv.env['ir.attachment'].search(domain)
+                    attachment = inv.env['ir.attachment'].search(domain,limit=1)
                     inv.write({'l10n_mx_edi_cfdi_name': attachment.name})
                 
             else:
