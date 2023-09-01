@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="l10n_mx_import_invoice_assests" name="Website Auto Facturacion" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+        <!-- 	 <script src="/l10n_mx_sat_sync_itadmin_ee/static/src/js/attach_xmls.js" type="text/javascript"/>
+        	<link href="/l10n_mx_sat_sync_itadmin_ee/static/src/css/style.css" rel="stylesheet"/>
+            <script type="text/javascript" src="/l10n_mx_sat_sync_itadmin_ee/static/src/js/list_controller.js"></script>
+            <script type="text/javascript" src="/l10n_mx_sat_sync_itadmin_ee/static/src/js/data_manager.js"></script> -->
+        </xpath>
+    </template>	
+</odoo>

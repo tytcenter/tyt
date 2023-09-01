@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="l10n_mx_esignature_certificate_list_action" model="ir.actions.act_window">
+            <field name="name">l10n.mx.esignature.certificate.action</field>
+            <field name="res_model">l10n.mx.esignature.certificate</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">Create the first esignature</p>
+            </field>
+        </record>
+
+        <record id="l10n_mx_esignature_certificate_form_view" model="ir.ui.view">
+            <field name="name">l10n.mx.esignature.certificate.form</field>
+            <field name="model">l10n.mx.esignature.certificate</field>
+            <field name="arch" type="xml">
+                <form string="esignature Form">
+                    <sheet>
+                        <group>
+                            <field name="content"/>
+                            <field name="key"/>
+                            <field name="password" password="True"/>
+                            <label for="date_start" string="Validity"/>
+                            <div>
+                                <field name="date_start"/> -
+                                <field name="date_end"/>
+                            </div>
+                            <field name="serial_number"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="l10n_mx_esignature_certificate_search_view" model="ir.ui.view">
+            <field name="name">l10n.mx.esignature.certificate.search</field>
+            <field name="model">l10n.mx.esignature.certificate</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="holder" string="Titular"/>
+                    <field name="holder_vat" string="RFC"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="l10n_mx_esignature_certificate_tree_view">
+            <field name="name">l10n.mx.esignature.certificate.tree</field>
+            <field name="model">l10n.mx.esignature.certificate</field>
+            <field name="arch" type="xml">
+                <tree string="esignature Tree">
+                    <field name="holder" string="Titular"/>
+                    <field name="holder_vat" string="RFC"/>
+                    <field name="serial_number"/>
+                    <field name="date_start"/>
+                    <field name="date_end"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</openerp>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <record id="view_move_form_inh" model="ir.ui.view">
+		<field name="name">account.move.form.inh</field>
+		<field name="model">account.move</field>
+		<field name="inherit_id" ref="account.view_move_form" />
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='payment_reference']" position="after">
+				<field name="hide_message" invisible="1"/>
+			</xpath>
+			<xpath expr="//div[hasclass('alert-info')]" position="attributes">
+				<attribute name="attrs">{'invisible': ['|','|', ('edi_web_services_to_process', 'in', ['', False]), ('state', '=', 'draft'), ('hide_message','=',True)]}</attribute>
+			</xpath>
+		</field>
+	</record>
+
+</odoo>

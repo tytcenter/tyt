@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_ir_attachment_search_inherit_cfdi_account_files_invoice" model="ir.ui.view">
+        <field name="name">ir.attachment.search.inherit.cfdi.file.inovice</field>
+        <field name="model">ir.attachment</field>
+        <field name="inherit_id" ref="base.view_attachment_search" />
+        <field name="arch" type="xml">
+            <field name="create_date" position="after">
+                <field name="cfdi_uuid"/>
+                <field name="nombre_tercero"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_ir_attachment_form_inherit_cfdi_account_files_invoice" model="ir.ui.view">
+        <field name="name">ir.attachment.form.inherit.cfdi.file.inovice</field>
+        <field name="model">ir.attachment</field>
+        <field name="inherit_id" ref="base.view_attachment_form" />
+        <field name="arch" type="xml">
+            <field name="mimetype" position="after">
+                <field name="cfdi_type" invisible="not context.get('is_fiel_attachment')" required="context.get('is_fiel_attachment')"/>
+            </field>
+            <xpath expr="//label[@for='name']" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_invoice"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-pencil-square-o"
+                            attrs="{'invisible': [('invoice_count', '=', 0)]}">
+                            <field name="invoice_count" widget="statinfo" string="Facturas"/>
+                        </button>
+                    <button name="action_view_payments"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-pencil-square-o"
+                        attrs="{'invisible': [('payment_count', '=', 0)]}">
+                        <field name="payment_count" widget="statinfo" string="Pagos"/>
+                    </button>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_attachment_tree_cfdi_sat_invoices_files" model="ir.ui.view">
+        <field name="model">ir.attachment</field>
+        <field name="arch" type="xml">
+            <tree string="Attachments" default_order="date_cfdi desc" js_class="itadmin_tree">
+                <field name="date_cfdi"/>
+                <field name="cfdi_uuid"/>
+                <field name="serie_folio"/>
+                <field name="cfdi_type" />
+                <field name="rfc_tercero"/>
+                <field name="nombre_tercero"/>
+                <field name="cfdi_total"/>
+                <field name="creado_en_odoo" />
+                <field name="estado" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_attachment_cfdi_supplier_invoices" model="ir.actions.act_window">
+        <field name="name">Documentos digitales</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ir.attachment</field>
+        <field name="view_id" eval="False"/>
+        <field name="search_view_id" ref="base.view_attachment_search"/>
+        <field name="view_id" ref="view_attachment_tree_cfdi_sat_invoices_files"/>
+        <field name="domain">[('cfdi_uuid','!=', False),('company_id','=',company_id)]</field>
+        <field name="context">{'is_fiel_attachment': True, 'from_sat_sync': True}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click here to create new documents.
+            </p>
+            <p>
+                Also you will find here all the related documents and download it by clicking on any individual document.
+            </p>
+        </field>
+    </record>
+   
+    <record id="action_attachment_cfdi_supplier_invoices_tree_view" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_attachment_tree_cfdi_sat_invoices_files"/>
+        <field name="act_window_id" ref="action_attachment_cfdi_supplier_invoices"/>
+    </record>
+
+    <record id="action_attachment_cfdi_supplier_invoices_form_view" model="ir.actions.act_window.view">
+        <field eval="2" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="base.view_attachment_form"/>
+        <field name="act_window_id" ref="action_attachment_cfdi_supplier_invoices"/>
+    </record>
+
+    <menuitem id="main_manu_attachment_cfdi_invoices"
+              parent="account_accountant.menu_accounting"
+              sequence="5"
+              name="ADD"
+    />
+
+    <menuitem action="action_attachment_cfdi_supplier_invoices"
+              id="menu_action_attachment_cfdi_supplier_invoices"
+              parent="main_manu_attachment_cfdi_invoices"
+              name="Documentos digitales"
+              sequence="10"/>
+
+    <record id="action_generate_supplier_invoice_from_attachment" model="ir.actions.act_window">
+        <field name="name">Genera facturas</field>
+        <field name="res_model">cfdi.invoice.attachment</field>
+        <field name="target">new</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'create_so_po':False}</field>
+        <field name="binding_model_id" ref="base.model_ir_attachment"/>
+    </record>
+
+    <record id="action_generate_so_po_from_attachment" model="ir.actions.act_window">
+        <field name="name">Genera pedidos</field>
+        <field name="res_model">cfdi.invoice.attachment</field>
+        <field name="target">new</field>
+        <field name="view_mode">form,list</field>
+        <field name="context">{'create_so_po':True}</field>
+        <field name="binding_model_id" ref="base.model_ir_attachment"/>
+    </record>
+  
+    <record id="action_unlink_xml_attahchment_from_invoice" model="ir.actions.server">
+    	<field name="name">Desconcilar</field>
+        <field name="type">ir.actions.server</field>
+        <field name="state">code</field>
+        <field name="model_id" ref="base.model_ir_attachment"/>
+        <field name="binding_model_id" ref="base.model_ir_attachment"/>
+        <field name="code">
+             records.action_renmove_invoice_link()
+        </field>
+    </record>
+
+    <record id="action_zip_xml_attahchment_from_invoice" model="ir.actions.server">
+    	<field name="name">Exportar XML</field>
+        <field name="type">ir.actions.server</field>
+        <field name="state">code</field>
+        <field name="model_id" ref="base.model_ir_attachment"/>
+        <field name="binding_model_id" ref="base.model_ir_attachment"/>
+        <field name="code">action=records.action_extract_zip()</field>
+    </record>
+
+    <record id="action_reconcile_vendor_cfdi_xml_bill_popup" model="ir.actions.act_window">
+        <field name="name">Conciliar</field>
+        <field name="res_model">reconcile.vendor.cfdi.xml.bill</field>
+        <field name="target">new</field>
+        <field name="view_mode">form</field>
+        <field name="binding_model_id" ref="base.model_ir_attachment"/>
+    </record>
+	  
+	<record id="action_compute_cfdi_uuid" model="ir.actions.server">
+    	<field name="name">UUID De XML</field>
+        <field name="type">ir.actions.server</field>
+        <field name="state">code</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="code">records.run_cfdi_uuid()</field>
+    </record>
+
+    <record id="action_download_state_from_sat" model="ir.actions.server">
+    	<field name="name">Descargar estado del SAT</field>
+        <field name="type">ir.actions.server</field>
+        <field name="state">code</field>
+        <field name="model_id" ref="base.model_ir_attachment"/>
+        <field name="binding_model_id" ref="base.model_ir_attachment"/>
+        <field name="code">
+             records.action_download_state()
+        </field>
+    </record>
+
+</odoo>

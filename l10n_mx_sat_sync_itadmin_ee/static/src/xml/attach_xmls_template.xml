@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xml:space="preserve">
+    <t t-name="l10n_mx_sat_sync_itadmin_ee.multi_attach_xmls_template" owl="1">
+        <div style="margin:-24px -16px;padding:0px;" id="attach_widget">
+            <div id="dragandrophandler" class="dnd_normal" draggable="true" t-on-dragenter="_onDragEnter"
+                 t-on-dragover="_onDragOver" t-on-drop="_onDrop" t-on-click="_onClickWrapper">
+                <p>Arrastre y suelte sus archivos aquí</p>
+                <p>o de clic para subir los archivos</p>
+            </div>
+            <input id="files" class="files" type="file" multiple="multiple" style="display:none;"
+                   t-on-change="_uploadFile"/>
+            <div id="alertscontent" style="margin:0;padding:0;"/>
+            <div id="filescontent"/>
+            <div id="dndfooter">
+                <button id="save" class="btn btn-sm btn-primary" t-on-click="_onButtonSave">
+                    <span>Importar</span>
+                </button>
+                <button id="show" class="btn btn-sm btn-primary" style="display: none;" t-on-click="_onButtonShow">
+                    <span>Mostrar adjuntos</span>
+                </button>
+                <button id="close" class="btn btn-sm oe_link" t-on-click="_onButtonClose">
+                    <span>Cancelar</span>
+                </button>
+            </div>
+        </div>
+        <script>
+            $("#attach_widget").parent("div").removeClass("o_field_widget");
+        </script>
+    </t>
+</template>

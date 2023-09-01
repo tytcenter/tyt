@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_res_company_form_inherit_form_cfdi_account_files_invoice" model="ir.ui.view">
+            <field name="name">res.company.form.inherit.form.cfdi.file.inovice</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page name="info_sat_sync" string="CFDI SAT Sync">
+                            <separator string="SAT Synchronization" />
+			                <group>
+			                	<field name="l10n_mx_esignature_ids"/>
+			                </group>
+			                            
+                            <group cols="4">
+                            	<group>
+                            		<field name="last_cfdi_fetch_date" />
+                            	</group>
+                            <!--	<group>
+                            		<button name="download_cfdi_invoices"
+				                    class="oe_stat_button"
+				                    string="Download"
+				                    type="object"/>
+                            	</group>-->
+                            </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+</odoo>

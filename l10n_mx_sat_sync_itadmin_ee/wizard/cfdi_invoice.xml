@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_import_cfdi_invoice_from_ir_attachment_form" model="ir.ui.view">
+            <field name="name">Import Invoice from Attachment</field>
+            <field name="model">cfdi.invoice.attachment</field>
+            <field name="arch" type="xml">
+                <form string="Importar facturas de compra">
+                	<group>
+                		<field name="journal_id" context="{'default_type': 'sale'}" required="not context.get('create_so_po')" invisible="context.get('create_so_po')" domain="[('company_id','=',company_id),('type','=','sale')]"/>
+                		<field name="supplier_journal_id" context="{'default_type': 'purchase'}" required="not context.get('create_so_po')" invisible="context.get('create_so_po')" domain="[('company_id','=',company_id),('type','=','purchase')]"/>
+                		<field name="credit_journal_id" context="{'default_type': 'sale'}" required="not context.get('create_so_po')" invisible="context.get('create_so_po')" domain="[('company_id','=',company_id),('type','=','sale')]"/>
+                		<field name="credit_supplier_journal_id" context="{'default_type': 'purchase'}" required="not context.get('create_so_po')" invisible="context.get('create_so_po')" domain="[('company_id','=',company_id),('type','=','purchase')]"/>
+                		<field name="product_id" attrs="{'invisible':[('si_producto_no_tiene_codigo', '=', 'Crear automatico')], 'required':[('si_producto_no_tiene_codigo', '=', 'Buscar manual')]}"/>
+                		<field name="si_producto_no_tiene_codigo" invisible="1"/>
+                		<field name="company_id" invisible="1"/>
+                	</group>
+                	<footer>
+                        <button name="import_xml_file" string="Importar" type="object" class="oe_highlight"/> 
+                        <button string="Cancelar" class="oe_highlight" special="cancel" />
+                    </footer>
+               </form>
+            </field>
+        </record>
+    </data>
+</odoo>

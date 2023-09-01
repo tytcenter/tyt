@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo >	
+	 <!-- <record id="manger_payroll_cfid_type" model="ir.rule">
+        <field name="name">manager payroll cfid_type</field>
+        <field name="model_id" ref="model_ir_attachment"/>
+        <field name="domain_force">[('cfdi_type' ,'=', 'N')]</field>
+        <field name="groups" eval="[(4, ref('hr_payroll.group_hr_payroll_manager'))]"/>
+    </record> --> 
+</odoo>

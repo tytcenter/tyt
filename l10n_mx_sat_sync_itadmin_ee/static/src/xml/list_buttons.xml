@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+
+<t t-name="l10n_mx_sat_sync_itadmin_ee.ListView.Buttons" t-inherit="web.ListView.Buttons" t-inherit-mode="primary" owl="1">
+        <xpath expr="//*[@class='btn btn-primary o_list_button_add']" position="before">
+            <button type='button' class='btn btn-default btn-sm o_list_button_importar_xml_fiel_invoice_from_sat' accesskey='xml' t-on-click="_onClickImportarXML">Importar XML</button>
+            <button type='button' class='btn btn-default btn-sm o_list_button_descarga_x_dia_fiel_invoice_from_sat' accesskey='dia' t-on-click='_onClickDescargaXDia'>Descarga Dia</button>
+            <button type='button' class='btn btn-default btn-sm o_list_button_import_fiel_invoice_from_sat' accesskey='if' t-on-click="_onImportFIELSatInvoice">Sincronizar SAT</button>
+           <!-- <button type='button' class='btn btn-default btn-sm o_list_button_sincronizar_documentos_fiel_invoice_from_sat' accesskey='xml' t-on-click="_onClickSincronizarDocumentos">Sincronizar documentos</button>-->
+        </xpath>
+    </t>
+</template>

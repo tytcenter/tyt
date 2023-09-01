@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_l10n_mx_sat_sync_itadmin" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.l10n.mx.sat.sync</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='invoicing_settings']" position="after">
+                <h2>SAT Synchronization</h2>
+                <div class="row mt16 o_settings_container" id="settings_sat_sync_configuration">
+                    <div class="col-12 col-lg-6 o_setting_box" title="The parameters to configure the MX E-Signature.">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">MX E-Signatures</span>
+                            <div class="text-muted">
+                                Configure your E-Signatures.
+                            </div>
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <field name="l10n_mx_esignature_ids"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                	<label for="product_type_default" class="col-md-3 o_light_label"/>
+                                    <field name="product_type_default"/>
+                                    <label for="solo_documentos_de_proveedor" class="col-md-3 o_light_label"/>
+                                    <field name="solo_documentos_de_proveedor"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="o_setting_left_pane">
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="si_producto_no_tiene_codigo"/>
+                            <div class="content-group">
+                                 <field name="si_producto_no_tiene_codigo" class="o_light_label mt16" widget="radio"/>
+                            </div>
+                        </div>
+                        <div class="o_setting_left_pane">
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="download_type" class="col-md-3 o_light_label"/>
+                                    <field name="download_type"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="o_setting_left_pane">
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="tipo_conciliacion" class="col-md-3 o_light_label"/>
+                                    <field name="tipo_conciliacion"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="o_setting_left_pane">
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="rango" class="col-md-3 o_light_label"/>
+                                    <field name="rango"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+            
+        </field>
+    </record>
+</odoo>
