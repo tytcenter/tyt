@@ -1,0 +1,4 @@
+[submodule "SoyCalidad/tyt_calidad_"]
+	path = SoyCalidad/tyt_calidad_
+	url = git@github.com:SoyCalidad/tyt_calidad_.git
+	branch = cybe
