@@ -1,1 +1,4 @@
 xmltodict
+pandas
+openpyxl==3.0.10
+pysftp
