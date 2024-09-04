@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+   <record id="hr_contract_view_form_inverso" model="ir.ui.view">
+        <field name="name">hr.inverso.nomina</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="nomina_cfdi_ee.hr_contract_view_form_nomina_cfdi"/>
+        <field name="arch" type="xml">
+           <field name="sueldo_base_cotizacion" position="after">
+                <field name="sbc_fijo"/>
+           </field>
+              <xpath expr="//notebook" position="inside">
+                <page name="acumulados" string="Acum. Calc. Inv.">
+                        <group cols="4">
+                            <group string="Acumulados">
+                                <field name="acum_per_grav" />
+                                <field name="acum_isr" />
+                                <field name="acum_isr_antes_subem" />
+                                <field name="acum_subsidio_aplicado" />
+                            </group>
+                        </group>
+                </page>
+              </xpath>
+        </field>
+    </record>
+
+</odoo>
+

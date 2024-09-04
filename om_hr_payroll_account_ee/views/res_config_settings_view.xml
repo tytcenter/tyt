@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_inherit" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="om_hr_payroll.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='om_hr_payroll_account']" position="after">
+                <div class="row mt16 o_settings_container" id="hr_payroll_accountant">
+                    <div class="col-md-6 col-xs-12 o_setting_box">
+                        <div class="o_setting_left_pane">
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="tipo_de_poliza" />
+                            <field name="tipo_de_poliza" class="o_light_label mt16" />
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt16 o_settings_container" id="hr_payroll_accountant">
+                    <div class="col-md-6 col-xs-12 o_setting_box">
+                        <div class="o_setting_left_pane">
+                        	<field name="compacta" attrs="{'invisible': [('tipo_de_poliza', '!=', 'Por nómina')]}"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="compacta" attrs="{'invisible': [('tipo_de_poliza', '!=', 'Por nómina')]}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt16 o_settings_container" id="hr_payroll_accountant"  attrs="{'invisible': [('compacta', '=', False)]}">
+                        <div class="col-12 col-lg-6 o_setting_box" id="tipo_compacta">
+                            <div class="o_setting_right_pane">
+                                <div>
+                                    <label string="Tipo de póliza compacta" for="tipo_de_compacta"/>
+                                    <!--<span title="No agrupa por cuentas analíticas."/> -->
+                                    <div class="text-muted">
+                                        No agrupa por cuentas analíticas
+                                    </div>
+                                    <div class="content-group mt16 o_light_label">
+                                        <field name="tipo_de_compacta" colspan="4" nolabel="1" widget="radio"  attrs="{'invisible': [('compacta', '=', False)]}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </xpath>
+            
+        </field>
+    </record>
+</odoo>

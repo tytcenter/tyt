@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <record id="form_tablas_imss_view" model="ir.ui.view">
+        <field name="name">tablas.cfdi.imss</field>
+        <field name="model">tablas.cfdi</field>
+        <field name="inherit_id" ref="nomina_cfdi_ee.form_tablas_cfdi_view"/>
+        <field name="arch" type="xml">
+          <xpath expr="//notebook" position="inside">
+             <page name="imss" string="Poliza IMSS">
+                 <group cols="4" string="Cuentas para póliza patronal IMSS">
+                     <group string="Debito">
+                         <field name="pat_cuota_fija_pat_deb"/>
+                         <field name="pat_exedente_smg_deb"/>
+                         <field name="pat_prest_dinero_deb"/>
+                         <field name="pat_esp_pens_deb"/>
+                         <field name="pat_riesgo_trabajo_deb"/>
+                         <field name="pat_invalidez_vida_deb"/>
+                         <field name="pat_guarderias_deb"/>
+                         <field name="pat_retiro_deb"/>
+                         <field name="pat_cesantia_vejez_deb"/>
+                         <field name="pat_infonavit_deb"/>
+                         <field name="pat_total_deb"/>
+                     </group>
+                     <group string="Crédito">
+                         <field name="pat_cuota_fija_pat_cre"/>
+                         <field name="pat_exedente_smg_cre"/>
+                         <field name="pat_prest_dinero_cre"/>
+                         <field name="pat_esp_pens_cre"/>
+                         <field name="pat_riesgo_trabajo_cre"/>
+                         <field name="pat_invalidez_vida_cre"/>
+                         <field name="pat_guarderias_cre"/>
+                         <field name="pat_retiro_cre"/>
+                         <field name="pat_cesantia_vejez_cre"/>
+                         <field name="pat_infonavit_cre"/>
+                         <field name="pat_total_cre"/>
+                     </group>
+                 </group>
+             </page>
+          </xpath>
+       </field>
+    </record>
+
+</odoo>

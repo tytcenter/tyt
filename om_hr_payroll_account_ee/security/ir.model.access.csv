@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_nomina_deudora,nomina_deudora,om_hr_payroll_account_ee.model_nomina_deudora,om_hr_payroll.group_hr_payroll_user,1,1,1,1
+access_nomina_acreedora,nomina_acreedora,om_hr_payroll_account_ee.model_nomina_acreedora,om_hr_payroll.group_hr_payroll_user,1,1,1,1
+access_poliza_imss,poliza_imss,om_hr_payroll_account_ee.model_wizard_poliza_imss,om_hr_payroll.group_hr_payroll_user,1,1,1,1
