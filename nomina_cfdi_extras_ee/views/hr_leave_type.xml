@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="hr_leave_form_ext">
+        <field name="name">hr.leave.type.form.inherit</field>
+        <field name="model">hr.leave.type</field>
+        <field name="inherit_id" ref="hr_holidays.edit_holiday_status_form"/>
+        <field name="arch" type="xml">
+            <field name="support_document" position="after">
+                <field name="code"/>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="hr_leave_view_ext">
+        <field name="name">hr.leave.view.inherit</field>
+        <field name="model">hr.leave</field>
+        <field name="inherit_id" ref="hr_holidays.hr_leave_view_form_manager"/>
+        <field name="arch" type="xml">
+            <div class="o_hr_leave_content row" position="after">
+                 <field name="type_vac" invisible='1'/>
+                 <field name="type_inc" invisible='1'/>
+                 <group>
+                     <group string="Información vacaciones" attrs="{'invisible':[('type_vac', '=', False)]}">
+                         <field name="dias_de_vacaciones_disponibles" readonly="1" force_save="1"/>
+                     </group>
+                     <group string="Información incapacidades"  attrs="{'invisible':[('type_inc', '=', False)]}">
+                         <field name="ramo_de_seguro" attrs="{'readonly' : [('state', '=','validate')], 'required':[('type_inc', '=', True)]}"/>
+                         <field name="tipo_de_riesgo"  attrs="{'readonly' : [('state', '=','validate')], 'invisible': [('ramo_de_seguro','not in',('Riesgo de trabajo'))], 
+                                                               'required':[('ramo_de_seguro', 'in', ('Riesgo de trabajo'))]}"/>
+                         <field name="secuela" attrs="{'readonly' : [('state', '=','validate')], 'invisible': [('ramo_de_seguro','not in',('Riesgo de trabajo'))], 
+                                                       'required':[('ramo_de_seguro', 'in', ('Riesgo de trabajo'))]}"/>
+                         <field name="control" attrs="{'readonly' : [('state', '=','validate')], 'invisible': [('ramo_de_seguro','in',('Maternidad'))], 
+                                                       'required':[('ramo_de_seguro', 'in', ['Riesgo de trabajo', 'Enfermedad general'])]}"/>
+                         <field name="control2" attrs="{'readonly' : [('state', '=','validate')], 'invisible': [('ramo_de_seguro','not in',('Maternidad'))], 
+                                                       'required':[('ramo_de_seguro', 'in', ('Maternidad'))]}"/>
+                         <field name="porcentaje" attrs="{'readonly' : [('state', '=','validate')], 'invisible': [('ramo_de_seguro','not in',('Riesgo de trabajo'))], 
+                                                       'required':[('ramo_de_seguro', 'in', ('Riesgo de trabajo'))]}"/>
+                         <field name="folio_incapacidad" attrs="{'readonly' : [('state', '=','validate')], 'required':[('type_inc', '=', True)]}"/>
+                     </group>
+                 </group>
+                 <field colspan="4" name="descripcion" class="oe_inline" placeholder="Descripción de la incapacidad" attrs="{'readonly' : [('state', '=','validate')], 'invisible':[('type_inc', '=', False)]}"/>
+            </div>
+        </field>
+    </record>
+
+</odoo>
