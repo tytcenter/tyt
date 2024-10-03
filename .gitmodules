@@ -2,6 +2,3 @@
 	path = SoyCalidad/tyt_calidad_
 	url = git@github.com:SoyCalidad/tyt_calidad_.git
 	branch = cybe
-[submodule "SoyCalidad/frescos_calidad_"]
-	path = SoyCalidad/frescos_calidad_
-	url = https://github.com/SoyCalidad/frescos_calidad_/
