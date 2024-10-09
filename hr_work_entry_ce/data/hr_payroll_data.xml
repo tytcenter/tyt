@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- Work Entry Type -->
+        <record id="work_entry_type_fjc" model="hr.work.entry.type">
+            <field name="name">Falta justificada con goce</field>
+            <field name="color">0</field>
+            <field name="code">FJC</field>
+        </record>
+
+        <record id="work_entry_type_fjs" model="hr.work.entry.type">
+            <field name="name">Falta justificada sin goce</field>
+            <field name="color">4</field>
+            <field name="code">FJS</field>
+        </record>
+
+        <record id="work_entry_type_fi" model="hr.work.entry.type">
+            <field name="name">Falta injustificada</field>
+            <field name="color">4</field>
+            <field name="code">FI</field>
+        </record>
+
+        <record id="work_entry_type_fr" model="hr.work.entry.type">
+            <field name="name">Falta por retardo</field>
+            <field name="color">4</field>
+            <field name="code">FR</field>
+        </record>
+
+        <record id="work_entry_type_vac" model="hr.work.entry.type">
+            <field name="name">Vacaciones</field>
+            <field name="color">4</field>
+            <field name="code">VAC</field>
+        </record>
+
+        <record id="work_entry_type_inc_rt" model="hr.work.entry.type">
+            <field name="name">Incapacidad por riesgo trabajo</field>
+            <field name="color">4</field>
+            <field name="code">INC_RT</field>
+        </record>
+
+        <record id="work_entry_type_inc_eg" model="hr.work.entry.type">
+            <field name="name">Incapacidad por enfermedad gral.</field>
+            <field name="color">4</field>
+            <field name="code">INC_EG</field>
+        </record>
+
+        <record id="work_entry_type_inc_mat" model="hr.work.entry.type">
+            <field name="name">Incapacidad por maternidad</field>
+            <field name="color">4</field>
+            <field name="code">INC_MAT</field>
+        </record>
+
+        <record id="work_entry_type_dfest" model="hr.work.entry.type">
+            <field name="name">Dia festivo</field>
+            <field name="color">4</field>
+            <field name="code">DFES</field>
+        </record>
+
+        <record id="work_entry_type_dfest3" model="hr.work.entry.type">
+            <field name="name">Dia festivo triple</field>
+            <field name="color">4</field>
+            <field name="code">DFES_3</field>
+        </record>
+
+    </data>
+
+</odoo>

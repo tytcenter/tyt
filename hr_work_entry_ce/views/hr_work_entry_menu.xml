@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Entradas de trabajo -->
+     <menuitem 
+               id="menu_hr_payroll_work_entries_base" 
+               name="Entradas de trabajo" 
+               parent="om_hr_payroll.menu_hr_payroll_root" 
+               sequence="60" 
+               groups="hr.group_hr_user"/>
+
+     <menuitem 
+               id="menu_work_entry" 
+               name="Entradas de trabajo" 
+               action="hr_work_entry.hr_work_entry_action" 
+               parent="menu_hr_payroll_work_entries_base" 
+               sequence="25"/>
+
+    <!-- Configuración Entradas de trabajo -->
+     <menuitem id="hr_work_entry_configuration"
+               name="Entradas de trabajo"
+               parent="om_hr_payroll.menu_hr_payroll_configuration"
+               sequence="50"/>
+
+     <menuitem id="menu_hr_work_entry_type_view" 
+               action="hr_work_entry.hr_work_entry_type_action" 
+               parent="hr_work_entry_configuration"/>
+
+     <menuitem id="menu_resource_calendar_view" 
+               action="resource.action_resource_calendar_form" 
+               parent="hr_work_entry_configuration"/>
+
+</odoo>

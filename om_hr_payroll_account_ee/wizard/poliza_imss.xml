@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="wizard_poliza_imss_form_view" model="ir.ui.view">
+        <field name="name">Poliza IMSS</field>
+        <field name="model">wizard.poliza.imss</field>
+        <field name="arch" type="xml">
+        <form string="Poliza IMSS">
+            <group col="4">
+                <field name="date" required="1"/>
+                <field name="hr_payslip_run_ids" widget="many2many_tags" required="1"/>
+                <field name="journal_id" required="1"/>
+                <field name="tablas_id" required="1"/>
+            </group>
+            <footer>
+                <button name="create_poliza_imss" string="Generar" type="object" default_focus="1" class="oe_highlight"/>
+                <button string="Cancelar" class="btn btn-default" special="cancel" />
+            </footer>
+        </form>
+        </field>
+    </record>
+    <record id="action_poliza_imss" model="ir.actions.act_window">
+        <field name="name">Poliza IMSS</field>
+        <field name="res_model">wizard.poliza.imss</field>
+        <field name="type">ir.actions.act_window</field>
+        <!-- <field name="view_type">form</field> -->
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="wizard_poliza_imss_form_view"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_action_wizard_poliza_imss"
+                name="Poliza IMSS"
+                action="action_poliza_imss"
+                parent="nomina_cfdi_extras_ee.menu_payroll_payslip_reportes" 
+                groups="om_hr_payroll.group_hr_payroll_user"
+                sequence="80"/>
+
+</odoo>
