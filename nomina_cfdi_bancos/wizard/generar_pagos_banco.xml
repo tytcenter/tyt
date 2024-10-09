@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+    <record id="generar_pagos_banco_view_form" model="ir.ui.view">
+        <field name="name">Generar.Pagos.Banco.form.view</field>
+        <field name="model">generar.pagos.banco</field>
+        <field name="arch" type="xml">
+            <form string="Generar dispersión a bancos">
+                <group>
+                    <field name="banco_rfc"/>
+                    <field name="diario_pago" />
+                    <field name="employee_type" />
+                    <field name="dato1" attrs="{'invisible':[('banco_rfc','!=','BSM970519DU8')]}"/>
+                    <field name="banamex_no_cliente" attrs="{'invisible':[('banco_rfc','not in',['BNM840515VB1_2', 'BNM840515VB1'])]}"/>
+                    <field name="banamex_secuencia" attrs="{'invisible':[('banco_rfc','not in',['BNM840515VB1_2', 'BNM840515VB1'])]}"/>
+                    <field name="banamex_descripcion" attrs="{'invisible':[('banco_rfc','not in',['BNM840515VB1_2', 'BNM840515VB1'])]}"/>
+                    <field name="banamex_referencia" attrs="{'invisible':[('banco_rfc','not in',['BNM840515VB1_2', 'BNM840515VB1'])]}"/>
+                    <field name="banorte_numero" attrs="{'invisible':[('banco_rfc','!=','BMN930209927')]}"/>
+                    <field name="bbva_referencia" attrs="{'invisible':[('banco_rfc','!=','BBA830831LJ2')]}"/>
+                    <field name="bbva_no_contrato" attrs="{'invisible':[('banco_rfc','!=','BBA830831LJ2')]}"/>
+                    <field name="scotia_numero" attrs="{'invisible':[('banco_rfc','!=','SIN9412025I4')]}"/>
+                    <field name="scotia_cuenta" attrs="{'invisible':[('banco_rfc','!=','SIN9412025I4')]}"/>
+                    <field name="scotia_referencia" attrs="{'invisible':[('banco_rfc','!=','SIN9412025I4')]}"/>
+                    <field name="inbursa_cuenta" attrs="{'invisible':[('banco_rfc','!=','BII931004P61')]}"/>
+                    <field name="bajio_afinidad" attrs="{'invisible':[('banco_rfc','!=','BBA9407071E1')]}"/>
+                    <field name="fecha_dispersion" />
+                </group>
+                <footer>
+	                <button string="Generar" type="object" class="oe_highlight" name="action_print_generar_pagos"/>
+	                <button string="Cancelar" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <!-- <record id="generar_pagos_banco_form_action" model="ir.actions.act_window">
+        <field name="name">Generar Pagos Banco</field>
+        <field name="res_model">generar.pagos.banco</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record> -->
+
+    <!-- Add action entry in the Action Menu for Partners -->
+    <record id="generar_pagos_banco_action" model="ir.actions.act_window">
+        <field name="name">Generar Pagos Banco</field>
+        <field name="res_model">generar.pagos.banco</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="binding_model_id" ref="om_hr_payroll.model_hr_payslip_run"/>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+        </data>
+</odoo>
