@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record model="ir.rule" id="horas_nomina_rule">
+        <field name="name">Horas extras multi-company</field>
+        <field name="model_id" ref="model_horas_nomina"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record model="ir.rule" id="caja_ahorro_rule">
+        <field name="name">Caja Ahorro multi-company</field>
+        <field name="model_id" ref="model_caja_nomina"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record model="ir.module.category" id="module_nomina_ee">
+        <field name="name">Nomina MX</field>
+        <field name="description">Agrega permisos para ver la nómina MX</field>
+        <field name="sequence">100</field>
+    </record>
+
+    <record id="group_nomina_mx" model="res.groups">
+        <field name="name">Usuario</field>
+        <field name="category_id" ref="nomina_cfdi_ee.module_nomina_ee"/>
+    </record>
+
+</odoo>
